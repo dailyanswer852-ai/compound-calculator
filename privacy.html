@@ -1,44 +1,109 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>隱私政策 - 復利計算器</title>
+    <title data-key="title">Privacy Policy - Compound Interest Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
     <div class="max-w-4xl mx-auto px-6 py-12">
-        <h1 class="text-4xl font-bold mb-8">隱私政策</h1>
-        
-        <div class="prose max-w-none text-slate-700">
-            <p class="mb-6">最後更新日期：2026年5月12日</p>
-            
-            <h2 class="text-2xl font-semibold mt-8 mb-4">資料收集</h2>
-            <p>本網站唔會收集任何個人識別資訊。所有計算均喺你嘅瀏覽器本地進行，唔會傳送到任何伺服器。</p>
-            
-            <h2 class="text-2xl font-semibold mt-8 mb-4">Cookie 政策</h2>
-            <p>我哋使用 Google Analytics 嚟了解網站使用情況。呢啲資料係匿名嘅，只用於改善網站體驗。</p>
-            
-            <h2 class="text-2xl font-semibold mt-8 mb-4">第三方服務</h2>
-            <p>本網站使用以下第三方服務：</p>
-            <ul class="list-disc pl-6 space-y-2">
-                <li>Google Analytics（網站分析）</li>
-                <li>Chart.js（圖表顯示）</li>
-                <li>jsPDF（PDF 生成功能）</li>
-            </ul>
-            
-            <h2 class="text-2xl font-semibold mt-8 mb-4">資料安全</h2>
-            <p>由於所有計算喺本地進行，你嘅財務資料絕對安全，唔會離開你嘅裝置。</p>
-            
-            <h2 class="text-2xl font-semibold mt-8 mb-4">聯絡我們</h2>
-            <p>如對隱私政策有任何疑問，請聯絡：<a href="mailto:your-email@gmail.com" class="text-sky-600">your-email@gmail.com</a></p>
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-10">
+            <div class="flex items-center gap-x-3">
+                <div class="w-9 h-9 bg-sky-500 rounded-2xl flex items-center justify-center text-white text-2xl">📈</div>
+                <h1 class="text-3xl font-bold" data-key="title">Privacy Policy</h1>
+            </div>
+            <div class="flex items-center gap-x-4">
+                <select id="lang-select" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2 text-sm">
+                    <option value="en">🇺🇸 English</option>
+                    <option value="zh">🇹🇼 繁體中文</option>
+                </select>
+                <a href="index.html" class="text-sky-600 hover:text-sky-700 dark:text-sky-400">← Back to Calculator</a>
+            </div>
         </div>
-        
-        <div class="mt-12">
-            <a href="index.html" class="inline-flex items-center text-sky-600 hover:text-sky-800">
-                ← 返回計算器
-            </a>
+
+        <div class="prose max-w-none dark:prose-invert">
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">Last updated: May 12, 2026</p>
+
+            <div id="content-en">
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Data Collection</h2>
+                <p>This website does not collect any personally identifiable information. All calculations are performed locally in your browser and are never sent to any server.</p>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Cookie Policy</h2>
+                <p>We use Google Analytics to understand how visitors use our site. This data is anonymous and is only used to improve the website experience.</p>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Third-Party Services</h2>
+                <p>This website uses the following third-party services:</p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li>Google Analytics (website analytics)</li>
+                    <li>Chart.js (chart rendering)</li>
+                    <li>jsPDF (PDF generation)</li>
+                </ul>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Data Security</h2>
+                <p>Because all calculations run locally in your browser, your financial data never leaves your device and remains completely private.</p>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Contact Us</h2>
+                <p>If you have any questions about this Privacy Policy, please email us at: <a href="mailto:dail yanswer852@gmail.com" class="text-sky-600">dail yanswer852@gmail.com</a></p>
+            </div>
+
+            <div id="content-zh" class="hidden">
+                <h2 class="text-2xl font-semibold mt-8 mb-4">資料收集</h2>
+                <p>本網站唔會收集任何個人識別資訊。所有計算均喺你嘅瀏覽器本地進行，絕對唔會傳送到任何伺服器。</p>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Cookie 政策</h2>
+                <p>我哋使用 Google Analytics 嚟了解網站使用情況。呢啲資料係匿名嘅，只用於改善網站體驗。</p>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">第三方服務</h2>
+                <p>本網站使用以下第三方服務：</p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li>Google Analytics（網站分析）</li>
+                    <li>Chart.js（圖表顯示）</li>
+                    <li>jsPDF（PDF 生成功能）</li>
+                </ul>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">資料安全</h2>
+                <p>由於所有計算喺本地進行，你嘅財務資料絕對安全，唔會離開你嘅裝置。</p>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">聯絡我們</h2>
+                <p>如對隱私政策有任何疑問，請聯絡：<a href="mailto:dail yanswer852@gmail.com" class="text-sky-600">dail yanswer852@gmail.com</a></p>
+            </div>
         </div>
     </div>
+
+    <script>
+        const langSelect = document.getElementById('lang-select');
+        const contentEn = document.getElementById('content-en');
+        const contentZh = document.getElementById('content-zh');
+        const title = document.querySelector('[data-key="title"]');
+
+        function updateLanguage(lang) {
+            if (lang === 'zh') {
+                contentEn.classList.add('hidden');
+                contentZh.classList.remove('hidden');
+                title.textContent = '隱私政策 - 復利計算器';
+                document.title = '隱私政策 - 復利計算器';
+            } else {
+                contentEn.classList.remove('hidden');
+                contentZh.classList.add('hidden');
+                title.textContent = 'Privacy Policy - Compound Interest Calculator';
+                document.title = 'Privacy Policy - Compound Interest Calculator';
+            }
+            localStorage.setItem('privacyLang', lang);
+        }
+
+        langSelect.addEventListener('change', () => {
+            updateLanguage(langSelect.value);
+        });
+
+        // Load saved language
+        const savedLang = localStorage.getItem('privacyLang') || 'en';
+        langSelect.value = savedLang;
+        updateLanguage(savedLang);
+    </script>
 </body>
 </html>
