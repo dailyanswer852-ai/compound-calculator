@@ -1,40 +1,105 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>關於我們 - 復利計算器</title>
+    <title data-key="title">About Us - Compound Interest Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
     <div class="max-w-4xl mx-auto px-6 py-12">
-        <h1 class="text-4xl font-bold mb-8">關於復利計算器</h1>
-        
-        <div class="prose max-w-none">
-            <p class="text-lg mb-6">復利計算器係一個免費、簡單易用嘅線上工具，專為幫助大家了解複利增長嘅力量而設計。</p>
-            
-            <h2 class="text-2xl font-semibold mt-8 mb-4">我們嘅使命</h2>
-            <p>透過簡單嘅工具同教育內容，讓更多人掌握財務自由嘅基本概念。無論你係學生、職場新人定係投資者，都可以透過呢個工具快速計出自己嘅未來財富。</p>
-            
-            <h2 class="text-2xl font-semibold mt-8 mb-4">功能特色</h2>
-            <ul class="list-disc pl-6 space-y-2">
-                <li>即時計算複利增長</li>
-                <li>支援每月/每年復利</li>
-                <li>互動式增長曲線圖表</li>
-                <li>年份詳細拆解</li>
-                <li>一鍵下載 PDF 報告</li>
-                <li>中英雙語支援</li>
-            </ul>
-            
-            <h2 class="text-2xl font-semibold mt-8 mb-4">聯絡我們</h2>
-            <p>如有任何建議或問題，歡迎電郵至：<a href="mailto:your-email@gmail.com" class="text-sky-600">your-email@gmail.com</a></p>
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-10">
+            <div class="flex items-center gap-x-3">
+                <div class="w-9 h-9 bg-sky-500 rounded-2xl flex items-center justify-center text-white text-2xl">📈</div>
+                <h1 class="text-3xl font-bold" data-key="title">About Us</h1>
+            </div>
+            <div class="flex items-center gap-x-4">
+                <select id="lang-select" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2 text-sm">
+                    <option value="en">🇺🇸 English</option>
+                    <option value="zh">🇹🇼 繁體中文</option>
+                </select>
+                <a href="index.html" class="text-sky-600 hover:text-sky-700 dark:text-sky-400">← Back to Calculator</a>
+            </div>
         </div>
-        
-        <div class="mt-12">
-            <a href="index.html" class="inline-flex items-center text-sky-600 hover:text-sky-800">
-                ← 返回計算器
-            </a>
+
+        <div class="prose max-w-none dark:prose-invert">
+            <div id="content-en">
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Our Mission</h2>
+                <p class="text-lg">The Compound Interest Calculator is a free, simple, and powerful online tool designed to help everyone understand the magic of compound growth. Whether you are a student, young professional, or investor, this tool helps you visualize how small, consistent actions can lead to massive wealth over time.</p>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Why We Built This</h2>
+                <p>Financial literacy is one of the most important life skills, yet many people never learn it. We created this calculator to make compound interest easy to understand and calculate — with beautiful charts, year-by-year breakdowns, and instant PDF reports.</p>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Key Features</h2>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li>Real-time compound interest calculation</li>
+                    <li>Support for monthly &amp; annual compounding</li>
+                    <li>Interactive growth charts</li>
+                    <li>Detailed year-by-year breakdown</li>
+                    <li>One-click PDF report download</li>
+                    <li>Fully bilingual (English &amp; 繁體中文)</li>
+                </ul>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Contact Us</h2>
+                <p>If you have any suggestions or questions, feel free to email us at: <a href="mailto:dail yanswer852@gmail.com" class="text-sky-600">dail yanswer852@gmail.com</a></p>
+            </div>
+
+            <div id="content-zh" class="hidden">
+                <h2 class="text-2xl font-semibold mt-8 mb-4">我們嘅使命</h2>
+                <p class="text-lg">復利計算器係一個免費、簡單而強大嘅線上工具，專為幫助大家了解複利增長嘅魔力而設計。無論你係學生、職場新人定係投資者，呢個工具都可以幫助你視覺化「小小堅持」點樣隨時間變成巨大財富。</p>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">點解我哋要做呢個工具</h2>
+                <p>財務知識係人生最重要嘅技能之一，但好多人從未學過。我哋希望透過呢個計算器，讓複利變得容易理解同計算 —— 有靚仔圖表、年份詳細拆解，同埋一鍵下載 PDF 報告。</p>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">主要功能</h2>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li>即時復利計算</li>
+                    <li>支援每月同每年復利</li>
+                    <li>互動式增長曲線</li>
+                    <li>年份詳細拆解</li>
+                    <li>一鍵下載 PDF 報告</li>
+                    <li>完整中英雙語支援</li>
+                </ul>
+
+                <h2 class="text-2xl font-semibold mt-8 mb-4">聯絡我們</h2>
+                <p>如有任何建議或問題，歡迎電郵： <a href="mailto:dail yanswer852@gmail.com" class="text-sky-600">dail yanswer852@gmail.com</a></p>
+            </div>
         </div>
     </div>
+
+    <script>
+        const langSelect = document.getElementById('lang-select');
+        const contentEn = document.getElementById('content-en');
+        const contentZh = document.getElementById('content-zh');
+        const title = document.querySelector('[data-key="title"]');
+
+        function updateLanguage(lang) {
+            if (lang === 'zh') {
+                contentEn.classList.add('hidden');
+                contentZh.classList.remove('hidden');
+                title.textContent = '關於我們 - 復利計算器';
+                document.title = '關於我們 - 復利計算器';
+            } else {
+                contentEn.classList.remove('hidden');
+                contentZh.classList.add('hidden');
+                title.textContent = 'About Us - Compound Interest Calculator';
+                document.title = 'About Us - Compound Interest Calculator';
+            }
+            localStorage.setItem('aboutLang', lang);
+        }
+
+        langSelect.addEventListener('change', () => {
+            updateLanguage(langSelect.value);
+        });
+
+        // Load saved language
+        const savedLang = localStorage.getItem('aboutLang') || 'en';
+        langSelect.value = savedLang;
+        updateLanguage(savedLang);
+    </script>
 </body>
 </html>
