@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free Compound Interest Calculator with monthly contributions, interactive charts, year-by-year breakdown & PDF export. Supports English & 繁體中文.">
+    <meta name="keywords" content="compound interest calculator, compound interest, future value calculator, investment calculator, savings calculator">
+    <title data-key="title">Compound Interest Calculator</title>
+    
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 🔥 深色模式最終修復配置 -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            content: []
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        .tail-container * { font-family: 'Inter', system_ui, sans-serif; }
+        .calculator-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .result-value { animation: popIn 0.4s ease-out; }
+        @keyframes popIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .chart-container { position: relative; height: 380px; }
+    </style>
+</head>
+<body class="tail-container bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
+    <!-- HEADER -->
+    <header class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-9 h-9 bg-sky-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner">📈</div>
+                <h1 id="header-title" data-key="title" class="text-2xl font-semibold tracking-tight">Compound Interest Calculator</h1>
+            </div>
+            <div class="flex items-center gap-x-6">
+                <div class="flex items-center gap-x-2 bg-slate-100 dark:bg-slate-800 rounded-3xl px-2 py-1">
+                    <select id="lang-select" class="bg-transparent text-sm font-medium focus:outline-none cursor-pointer px-4 py-1.5 rounded-3xl"></select>
+                </div>
+                <button onclick="toggleDarkMode()" class="flex items-center justify-center w-10 h-10 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <span id="theme-icon" class="text-2xl">☀️</span>
+                </button>
+                <button onclick="shareLink()" class="flex items-center gap-x-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-300 dark:border-slate-700 px-5 h-10 rounded-3xl text-sm font-medium transition-all active:scale-95">
+                    <span class="text-lg">🔗</span>
+                    <span id="share-text" data-key="shareLink">Share Link</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="grid lg:grid-cols-12 gap-8">
+            <!-- INPUT FORM -->
+            <div class="lg:col-span-5">
+                <div class="calculator-card bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-500/10 dark:shadow-none border border-slate-200 dark:border-slate-800 p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 id="form-title" data-key="title" class="text-xl font-semibold">Enter your details</h2>
+                        <button onclick="resetForm()" class="text-sm font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 flex items-center gap-x-1 px-3 py-1 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800">🔄 Reset</button>
+                    </div>
+                    <div class="space-y-8">
+                        <div>
+                            <label id="label-initial" data-key="initialAmount" class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Initial Amount</label>
+                            <div class="relative">
+                                <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">$</span>
+                                <input id="initial-amount" type="number" value="10000" oninput="calculate()" class="w-full bg-slate-50 dark:bg-slate-800 border border-transparent focus:border-sky-400 rounded-2xl px-12 py-4 text-3xl font-semibold outline-none transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label id="label-monthly" data-key="monthlyContribution" class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Monthly Contribution</label>
+                            <div class="relative">
+                                <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">$</span>
+                                <input id="monthly-contribution" type="number" value="500" oninput="calculate()" class="w-full bg-slate-50 dark:bg-slate-800 border border-transparent focus:border-sky-400 rounded-2xl px-12 py-4 text-3xl font-semibold outline-none transition-all">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label id="label-rate" data-key="annualRate" class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Annual Interest Rate</label>
+                                <div class="relative">
+                                    <input id="annual-rate" type="number" value="6" step="0.1" oninput="calculate()" class="w-full bg-slate-50 dark:bg-slate-800 border border-transparent focus:border-sky-400 rounded-2xl px-6 py-4 text-3xl font-semibold outline-none transition-all">
+                                    <span class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 text-3xl">%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label id="label-years" data-key="years" class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Years</label>
+                                <input id="years" type="number" value="20" oninput="calculate()" class="w-full bg-slate-50 dark:bg-slate-800 border border-transparent focus:border-sky-400 rounded-2xl px-6 py-4 text-3xl font-semibold outline-none transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label id="label-frequency" data-key="compoundingFrequency" class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Compounding Frequency</label>
+                            <div class="flex bg-slate-100 dark:bg-slate-800 rounded-3xl p-1">
+                                <button onclick="setFrequency('monthly')" id="freq-monthly-btn" class="flex-1 py-4 text-sm font-semibold rounded-3xl transition-all data-[active=true]:bg-white dark:data-[active=true]:bg-slate-900 data-[active=true]:shadow">
+                                    <span id="freq-monthly" data-key="monthly">Monthly</span>
+                                </button>
+                                <button onclick="setFrequency('annually')" id="freq-annually-btn" class="flex-1 py-4 text-sm font-semibold rounded-3xl transition-all data-[active=true]:bg-white dark:data-[active=true]:bg-slate-900 data-[active=true]:shadow">
+                                    <span id="freq-annually" data-key="annually">Annually</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULTS -->
+            <div class="lg:col-span-7">
+                <div id="results-panel" class="space-y-8">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-xl shadow-slate-500/10 dark:shadow-none border border-slate-200 dark:border-slate-800">
+                            <p id="label-final" data-key="finalAmount" class="text-sm font-medium text-slate-500 dark:text-slate-400">Final Amount</p>
+                            <p id="final-amount-display" class="result-value text-4xl font-semibold text-emerald-500 mt-2">$148,024</p>
+                            <p id="final-subtext" class="text-xs text-emerald-600 dark:text-emerald-400 mt-1">after 20 years</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-xl shadow-slate-500/10 dark:shadow-none border border-slate-200 dark:border-slate-800">
+                            <p id="label-total-contrib" data-key="totalContributions" class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Contributions</p>
+                            <p id="total-contrib-display" class="result-value text-4xl font-semibold mt-2">$130,000</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-xl shadow-slate-500/10 dark:shadow-none border border-slate-200 dark:border-slate-800">
+                            <p id="label-total-interest" data-key="totalInterest" class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Interest</p>
+                            <p id="total-interest-display" class="result-value text-4xl font-semibold text-amber-500 mt-2">$18,024</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-500/10 dark:shadow-none border border-slate-200 dark:border-slate-800 p-8">
+                        <div class="flex justify-between items-baseline mb-6">
+                            <h3 id="chart-title" data-key="growthChart" class="font-semibold text-lg">Growth Over Time</h3>
+                            <div class="flex items-center gap-x-4 text-xs">
+                                <div class="flex items-center gap-x-1.5"><div class="w-3 h-px bg-emerald-400"></div><span id="legend-principal" class="text-slate-500 dark:text-slate-400">Principal</span></div>
+                                <div class="flex items-center gap-x-1.5"><div class="w-3 h-px bg-amber-400"></div><span id="legend-interest" class="text-slate-500 dark:text-slate-400">Interest</span></div>
+                            </div>
+                        </div>
+                        <div class="chart-container"><canvas id="growth-chart"></canvas></div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-500/10 dark:shadow-none border border-slate-200 dark:border-slate-800 p-8">
+                        <h3 id="table-title" class="font-semibold text-lg mb-4">Year-by-Year Breakdown</h3>
+                        <div class="overflow-x-auto">
+                            <table id="results-table" class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-slate-200 dark:border-slate-700">
+                                        <th id="th-year" data-key="year" class="text-left py-3 font-medium text-slate-500 dark:text-slate-400">Year</th>
+                                        <th id="th-start" data-key="startBalance" class="text-right py-3 font-medium text-slate-500 dark:text-slate-400">Start Balance</th>
+                                        <th id="th-deposit" data-key="annualDeposit" class="text-right py-3 font-medium text-slate-500 dark:text-slate-400">Annual Deposit</th>
+                                        <th id="th-interest" data-key="interestEarned" class="text-right py-3 font-medium text-slate-500 dark:text-slate-400">Interest</th>
+                                        <th id="th-end" data-key="endBalance" class="text-right py-3 font-medium text-slate-500 dark:text-slate-400">End Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body" class="text-slate-700 dark:text-slate-300 divide-y divide-slate-100 dark:divide-slate-700"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="downloadPDF()" class="flex-1 lg:flex-none flex items-center justify-center gap-x-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-8 py-4 rounded-3xl transition-all active:scale-95">
+                            <span class="text-xl">📄</span>
+                            <span id="pdf-text" data-key="downloadPDF">Download PDF Results</span>
+                        </button>
+                        <button onclick="shareLink()" class="flex-1 lg:flex-none flex items-center justify-center gap-x-3 border-2 border-slate-300 dark:border-slate-700 hover:border-slate-400 font-semibold px-8 py-4 rounded-3xl transition-all active:scale-95">
+                            <span class="text-xl">🔗</span>
+                            <span id="share-text-2" data-key="shareLink">One-click Share Link</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDUCATION SECTION -->
+        <div class="mt-16 max-w-4xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 id="edu-title" data-key="eduTitle" class="text-3xl font-semibold tracking-tight">Understanding Compound Interest</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2">The magic that turns small, consistent actions into massive wealth</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800"><div class="text-4xl mb-6">🌱</div><p id="edu-p1" data-key="edu1" class="leading-relaxed text-slate-600 dark:text-slate-300">Compound interest is the interest calculated on the initial principal and also on the accumulated interest of previous periods. It is often referred to as “interest on interest”.</p></div>
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800"><div class="text-4xl mb-6">📈</div><p id="edu-p2" data-key="edu2" class="leading-relaxed text-slate-600 dark:text-slate-300">Regular monthly contributions combined with compound interest can significantly boost your savings over time due to the exponential growth effect.</p></div>
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800"><div class="text-4xl mb-6">⏳</div><p id="edu-p3" data-key="edu3" class="leading-relaxed text-slate-600 dark:text-slate-300">The key factors affecting your returns are the interest rate, compounding frequency, investment period, and consistent contributions. Starting early maximizes the power of compounding.</p></div>
+            </div>
+            <div class="text-center text-xs text-slate-400 mt-12">Built as a single HTML file • Tailwind CSS + Chart.js + jsPDF • English &amp; 繁體中文</div>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                title: "Compound Interest Calculator",
+                initialAmount: "Initial Amount",
+                monthlyContribution: "Monthly Contribution",
+                annualRate: "Annual Interest Rate (%)",
+                years: "Number of Years",
+                compoundingFrequency: "Compounding Frequency",
+                annually: "Annually",
+                monthly: "Monthly",
+                finalAmount: "Final Amount",
+                totalContributions: "Total Contributions",
+                totalInterest: "Total Interest",
+                growthChart: "Growth Over Time (Principal vs Interest)",
+                year: "Year",
+                startBalance: "Start Balance",
+                annualDeposit: "Annual Deposit",
+                interestEarned: "Interest Earned",
+                endBalance: "End Balance",
+                shareLink: "Share Link",
+                downloadPDF: "Download PDF Results",
+                eduTitle: "Understanding Compound Interest",
+                edu1: "Compound interest is the interest calculated on the initial principal and also on the accumulated interest of previous periods. It is often referred to as “interest on interest”.",
+                edu2: "Regular monthly contributions combined with compound interest can significantly boost your savings over time due to the exponential growth effect.",
+                edu3: "The key factors affecting your returns are the interest rate, compounding frequency, investment period, and consistent contributions. Starting early maximizes the power of compounding."
+            },
+            zh: {
+                title: "復利計算器",
+                initialAmount: "初始金額",
+                monthlyContribution: "每月貢獻",
+                annualRate: "年利率 (%)",
+                years: "年期",
+                compoundingFrequency: "復利頻率",
+                annually: "每年",
+                monthly: "每月",
+                finalAmount: "最終金額",
+                totalContributions: "總貢獻金額",
+                totalInterest: "總利息",
+                growthChart: "增長曲線（本金 vs 利息）",
+                year: "年份",
+                startBalance: "起始餘額",
+                annualDeposit: "年度貢獻",
+                interestEarned: "當年利息",
+                endBalance: "期末餘額",
+                shareLink: "分享連結",
+                downloadPDF: "下載 PDF 結果",
+                eduTitle: "了解復利的力量",
+                edu1: "復利是指在初始本金的基礎上，同時對先前期間累積的利息計算利息，常被稱為「利息的利息」。",
+                edu2: "定期每月貢獻結合復利，由於指數增長效應，您的儲蓄會隨時間大幅增加。",
+                edu3: "影響報酬的主要因素是利率、復利頻率、投資期限與持續貢獻。愈早開始，愈能發揮復利的魔力。"
+            }
+        };
+
+        let currentLang = 'en';
+        let chartInstance = null;
+        let currentFrequency = 'monthly';
+
+        function calculateCompoundInterest() {
+            const principal = parseFloat(document.getElementById('initial-amount').value) || 0;
+            const monthlyContrib = parseFloat(document.getElementById('monthly-contribution').value) || 0;
+            const annualRate = parseFloat(document.getElementById('annual-rate').value) || 0;
+            const years = parseFloat(document.getElementById('years').value) || 0;
+            if (years <= 0 || annualRate < 0) return null;
+
+            const totalMonths = Math.round(years * 12);
+            let balance = principal;
+            let cumulativePrincipal = principal;
+            const yearlyData = [];
+            let currentYearStart = principal;
+
+            for (let month = 1; month <= totalMonths; month++) {
+                balance += monthlyContrib;
+                cumulativePrincipal += monthlyContrib;
+
+                if (currentFrequency === 'monthly') {
+                    balance *= (1 + annualRate / 100 / 12);
+                } else if (month % 12 === 0) {
+                    balance *= (1 + annualRate / 100);
+                }
+
+                if (month % 12 === 0) {
+                    const year = month / 12;
+                    const annualDeposit = monthlyContrib * 12;
+                    const interestThisYear = balance - currentYearStart - annualDeposit;
+                    yearlyData.push({
+                        year: year,
+                        startBalance: Math.round(currentYearStart),
+                        annualDeposit: Math.round(annualDeposit),
+                        interestEarned: Math.round(interestThisYear),
+                        endBalance: Math.round(balance)
+                    });
+                    currentYearStart = balance;
+                }
+            }
+
+            const finalAmount = Math.round(balance);
+            const totalContributions = Math.round(cumulativePrincipal);
+            const totalInterest = finalAmount - totalContributions;
+
+            return {
+                finalAmount,
+                totalContributions,
+                totalInterest,
+                yearlyData,
+                chartYears: yearlyData.map(d => `Year ${d.year}`),
+                chartPrincipal: yearlyData.map((_, i) => principal + monthlyContrib * 12 * (i + 1)),
+                chartInterest: yearlyData.map(d => d.endBalance - (principal + monthlyContrib * 12 * d.year))
+            };
+        }
+
+        function calculate() {
+            const result = calculateCompoundInterest();
+            if (!result) return;
+            document.getElementById('final-amount-display').innerHTML = `<span class="text-5xl">$${result.finalAmount.toLocaleString()}</span>`;
+            document.getElementById('total-contrib-display').innerHTML = `<span class="text-5xl">$${result.totalContributions.toLocaleString()}</span>`;
+            document.getElementById('total-interest-display').innerHTML = `<span class="text-5xl">$${result.totalInterest.toLocaleString()}</span>`;
+            renderTable(result.yearlyData);
+            renderChart(result);
+        }
+
+        function renderTable(yearlyData) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            yearlyData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors';
+                tr.innerHTML = `
+                    <td class="py-4 px-2 font-medium">${row.year}</td>
+                    <td class="py-4 px-2 text-right font-medium">$${row.startBalance.toLocaleString()}</td>
+                    <td class="py-4 px-2 text-right font-medium text-emerald-500">$${row.annualDeposit.toLocaleString()}</td>
+                    <td class="py-4 px-2 text-right font-medium text-amber-500">$${row.interestEarned.toLocaleString()}</td>
+                    <td class="py-4 px-2 text-right font-semibold">$${row.endBalance.toLocaleString()}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            if (yearlyData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-slate-400">Enter values above to see breakdown</td></tr>`;
+            }
+        }
+
+        function renderChart(data) {
+            const ctx = document.getElementById('growth-chart');
+            if (chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.chartYears,
+                    datasets: [
+                        { label: currentLang === 'en' ? 'Principal' : '本金', data: data.chartPrincipal, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.15)', borderWidth: 3, tension: 0.3, fill: true, pointRadius: 0 },
+                        { label: currentLang === 'en' ? 'Interest' : '利息', data: data.chartInterest, borderColor: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.15)', borderWidth: 3, tension: 0.3, fill: true, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false, callbacks: { label: ctx => '$' + ctx.raw.toLocaleString() } } },
+                    scales: {
+                        x: { grid: { color: 'rgba(148, 163, 184, 0.15)' }, ticks: { color: '#64748b', font: { size: 12 } } },
+                        y: { grid: { color: 'rgba(148, 163, 184, 0.15)' }, ticks: { color: '#64748b', font: { size: 12 }, callback: val => '$' + val.toLocaleString() } }
+                    }
+                }
+            });
+        }
+
+        function setFrequency(freq) {
+            currentFrequency = freq;
+            document.getElementById('freq-monthly-btn').dataset.active = freq === 'monthly';
+            document.getElementById('freq-annually-btn').dataset.active = freq === 'annually';
+            calculate();
+        }
+
+        function updateLanguage() {
+            const t = translations[currentLang];
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (t[key]) el.textContent = t[key];
+            });
+            document.getElementById('freq-monthly').textContent = t.monthly;
+            document.getElementById('freq-annually').textContent = t.annually;
+            if (chartInstance) calculate();
+            document.getElementById('lang-select').value = currentLang;
+        }
+
+        function initLanguageSelector() {
+            const select = document.getElementById('lang-select');
+            select.innerHTML = `<option value="en">🇺🇸 English</option><option value="zh">🇹🇼 繁體中文</option>`;
+            select.addEventListener('change', () => {
+                currentLang = select.value;
+                updateLanguage();
+            });
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            document.getElementById('theme-icon').textContent = isDark ? '🌙' : '☀️';
+            localStorage.setItem('darkMode', isDark ? 'true' : 'false');
+        }
+
+        function shareLink() {
+            const params = new URLSearchParams({
+                p: document.getElementById('initial-amount').value,
+                m: document.getElementById('monthly-contribution').value,
+                r: document.getElementById('annual-rate').value,
+                y: document.getElementById('years').value,
+                f: currentFrequency
+            });
+            const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                const btns = document.querySelectorAll('#share-text, #share-text-2');
+                btns.forEach(b => b.innerHTML = `✅ Copied!`);
+                setTimeout(() => updateLanguage(), 2000);
+            });
+        }
+
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const result = calculateCompoundInterest();
+            if (!result) return;
+            const t = translations[currentLang];
+            doc.setFontSize(22); doc.text(t.title, 20, 25);
+            doc.setFontSize(12); doc.text(new Date().toLocaleDateString(), 20, 34);
+            doc.setFontSize(14);
+            doc.text(`${t.finalAmount}: $${result.finalAmount.toLocaleString()}`, 20, 55);
+            doc.text(`${t.totalContributions}: $${result.totalContributions.toLocaleString()}`, 20, 64);
+            doc.text(`${t.totalInterest}: $${result.totalInterest.toLocaleString()}`, 20, 73);
+            let y = 90;
+            doc.setFontSize(11);
+            doc.text(`${t.initialAmount}: $${parseFloat(document.getElementById('initial-amount').value).toLocaleString()}`, 20, y);
+            doc.text(`${t.monthlyContribution}: $${parseFloat(document.getElementById('monthly-contribution').value).toLocaleString()}`, 20, y + 8);
+            doc.text(`${t.annualRate}: ${document.getElementById('annual-rate').value}%`, 20, y + 16);
+            doc.text(`${t.years}: ${document.getElementById('years').value}`, 20, y + 24);
+            doc.text(`${t.compoundingFrequency}: ${currentFrequency === 'monthly' ? t.monthly : t.annually}`, 20, y + 32);
+            y += 50;
+            doc.setFontSize(10);
+            doc.text(t.year, 20, y);
+            doc.text(t.startBalance, 55, y);
+            doc.text(t.annualDeposit, 90, y);
+            doc.text(t.interestEarned, 125, y);
+            doc.text(t.endBalance, 165, y);
+            y += 8;
+            result.yearlyData.forEach(row => {
+                if (y > 270) { doc.addPage(); y = 20; }
+                doc.text(row.year.toString(), 20, y);
+                doc.text('$' + row.startBalance.toLocaleString(), 55, y);
+                doc.text('$' + row.annualDeposit.toLocaleString(), 90, y);
+                doc.text('$' + row.interestEarned.toLocaleString(), 125, y);
+                doc.text('$' + row.endBalance.toLocaleString(), 165, y);
+                y += 7;
+            });
+            doc.setFontSize(9); doc.setTextColor(150, 150, 150);
+            doc.text('Generated by Compound Interest Calculator', 20, 285);
+            const fileName = currentLang === 'en' ? 'compound-interest-results.pdf' : '復利計算結果.pdf';
+            doc.save(fileName);
+        }
+
+        function loadFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('p')) document.getElementById('initial-amount').value = params.get('p');
+            if (params.has('m')) document.getElementById('monthly-contribution').value = params.get('m');
+            if (params.has('r')) document.getElementById('annual-rate').value = params.get('r');
+            if (params.has('y')) document.getElementById('years').value = params.get('y');
+            if (params.has('f')) currentFrequency = params.get('f');
+        }
+
+        function resetForm() {
+            document.getElementById('initial-amount').value = 10000;
+            document.getElementById('monthly-contribution').value = 500;
+            document.getElementById('annual-rate').value = 6;
+            document.getElementById('years').value = 20;
+            currentFrequency = 'monthly';
+            document.getElementById('freq-monthly-btn').dataset.active = 'true';
+            document.getElementById('freq-annually-btn').dataset.active = 'false';
+            calculate();
+        }
+
+        function initialize() {
+            initLanguageSelector();
+            loadFromURL();
+            document.getElementById('freq-monthly-btn').dataset.active = currentFrequency === 'monthly';
+            document.getElementById('freq-annually-btn').dataset.active = currentFrequency === 'annually';
+
+            const savedDark = localStorage.getItem('darkMode');
+            if (savedDark === 'true' || (savedDark === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('theme-icon').textContent = '🌙';
+            }
+
+            setTimeout(() => {
+                calculate();
+                updateLanguage();
+            }, 100);
+        }
+
+        window.onload = initialize;
+    </script>
+</body>
+</html>
