@@ -173,12 +173,12 @@
             </div>
         </div>
 
-        <!-- FOOTER LINKS -->
+        <!-- FOOTER WITH FULL LANGUAGE SYNC -->
         <footer class="max-w-7xl mx-auto px-6 py-12 border-t border-slate-200 dark:border-slate-800 mt-16">
             <div class="flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm text-slate-500 dark:text-slate-400">
-                <a href="about.html" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">關於我們</a>
-                <a href="privacy.html" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">隱私政策</a>
-                <a href="index.html" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">復利計算器</a>
+                <a href="about.html" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors" data-key="aboutUs">About Us</a>
+                <a href="privacy.html" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors" data-key="privacyPolicy">Privacy Policy</a>
+                <a href="index.html" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors" data-key="calculator">Calculator</a>
                 <span class="text-slate-300 dark:text-slate-700">•</span>
                 <span>Made with ❤️ for financial freedom</span>
             </div>
@@ -192,6 +192,9 @@
         const translations = {
             en: {
                 title: "Compound Interest Calculator",
+                aboutUs: "About Us",
+                privacyPolicy: "Privacy Policy",
+                calculator: "Calculator",
                 initialAmount: "Initial Amount",
                 monthlyContribution: "Monthly Contribution",
                 annualRate: "Annual Interest Rate (%)",
@@ -217,6 +220,9 @@
             },
             zh: {
                 title: "復利計算器",
+                aboutUs: "關於我們",
+                privacyPolicy: "隱私政策",
+                calculator: "復利計算器",
                 initialAmount: "初始金額",
                 monthlyContribution: "每月貢獻",
                 annualRate: "年利率 (%)",
